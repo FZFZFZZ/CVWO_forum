@@ -4,7 +4,7 @@ class Article < ApplicationRecord
 	has_many :comments, dependent: :destroy
 	has_many :taggables, dependent: :destroy
 	has_many :tags, through: :taggables
-	has_many :ratings
+	has_many :ratings, dependent: :destroy
   	has_many :users, through: :ratings
 	validates :title, presence: true
 	validates :body, presence: true, length: {minimum: 5}

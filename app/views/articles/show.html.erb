@@ -24,7 +24,12 @@
 </p>
 
 <p>
-  <strong>Average Rating:</strong> <%= sprintf('%.2f', @average_rating) %>
+  <strong>Average Rating:</strong>
+  <% if @average_rating %>
+    <%= sprintf('%.2f', @average_rating) %>
+  <% else %>
+    No one has rated it yet
+  <% end %>
 </p>
 
 <% if user_signed_in? %>
