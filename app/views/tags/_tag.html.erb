@@ -1,0 +1,15 @@
+<div id="<%= dom_id tag %>">
+  <p>
+    <strong>Name:</strong>
+    <%= tag.name %>
+  </p>
+
+<h2>Related Movies</h2>
+  <% @top_rated_articles.each do |article| %>
+    <a href="<%= article_path(article) %>">
+      <%= article.title %> 
+      <br/>
+    <% end %>
+</div>
+
+

@@ -1,0 +1,59 @@
+Rating.find_by(username: "2", Oid: '8798')
+Rating.find(300)
+User.find(6)
+Article.find(4308)
+Rating.destroy_all
+Rating.all
+exit
+Rating.destroy_all
+exit
+Rating.destroy_all
+exit
+User.find(username: test)
+User.find(username: 'test')
+User.find(username: '1')
+User.find.all
+User.all
+User.find_by(username: '1')
+User.find_by(username: 'test')
+exit
+User.find_by(username: 'test')
+User.find_by(username: '1')
+exit
+CommentReaction.all
+exit
+Comment.all
+comment = Comment.find(5)
+User.find_by(username: 'test')
+user = User.find_by(username: 'test')
+reaction = CommentReaction.new(comment: comment, user: user, reaction_type: 'like')
+reaction.save
+CommentReaction.all
+exit
+Comment.all
+exit
+Likes.all
+Like.all
+exit
+Like.all
+exit
+Like.all
+exit
+Like.all
+exit
+article = Article.find_by(Oid: 1)
+if article\
+  ratings = article.ratings\
+  puts ratings.inspect\
+else\
+  puts "Article not found."\
+end
+User.find_by(username: 'test')
+user = User.find_by(username: 'test')
+if user\
+  ratings = user.ratings\
+  puts ratings.inspect\
+else\
+  puts "User not found."\
+end
+exit

@@ -1,0 +1,67 @@
+<p style="color: green"><%= notice %></p>
+
+<% search = @article.title.gsub(" ", "%20") %>
+<%= link_to 'View Details in IMDb',
+  "https://www.imdb.com/find/?q=#{search}&ref_=nv_sr_sm", class: 'btn', target: '_blank' %>
+
+<%= link_to 'Search Page', articles_path, class: 'btn', method: :get %>
+
+<%= link_to 'My Profile', user_path(current_user) %>
+
+<h1><%= @article.title %></h1>
+<p><%= @article.body %></p>
+
+<%= render partial: 'likes/button', locals: { likeable: @article } %>
+
+<p>
+  <strong>Year:</strong>
+  <%= @article.year %>
+</p>
+
+<p>
+  <strong>Oid:</strong>
+  <%= @article.Oid %>
+</p>
+
+<p>
+  <strong>Average Rating:</strong> <%= sprintf('%.2f', @average_rating) %>
+</p>
+
+<% if user_signed_in? %>
+  <% if @user_rating %>
+    <p>You have rated this movie: <%= @user_rating.score %>/5.0</p></p>
+  <% else %>
+    <%= form_with model: [ @article, @article.ratings.build ], local: true do |form| %>
+      <div class="field">
+        <%= form.label :score %>
+        <%= form.number_field :score, in: 0..5, step: 0.1, class: 'form-control' %>
+      </div>
+      <div class="actions">
+        <%= form.submit "Submit Rating" %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>
+
+<ul>
+  <li><%= link_to "Edit", edit_article_path(@article) %></li>
+  <li><%= link_to "Destroy", article_path(@article), data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure?"
+                  } %></li>
+</ul>
+
+
+<strong>Tags:</strong>
+  <% @article.tags.each do |tag| %>
+    <%= link_to tag, style:'text-decoration:none' do %>
+      <span class='tag'><%= tag.name.capitalize %></span>
+    <% end %>
+  <% end %>
+
+<h2>Comments</h2>
+<%= render @comments %>
+
+
+<h2>Add your comment:</h2>
+<%= render 'comments/form' %>

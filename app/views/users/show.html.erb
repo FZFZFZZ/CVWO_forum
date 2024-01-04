@@ -1,0 +1,34 @@
+<h1>User Profile</h1>
+
+<p>Username: <%= @user.username %></p>
+<p>Email: <%= @user.email %></p>
+
+<h2>My Favourites</h2>
+<ul>
+  <% @liked_articles.each do |article| %>
+    <li><%= link_to article.title, article_path(article) %></li>
+    <!-- You can add more article details here -->
+  <% end %>
+</ul>
+
+<h2>Recently Commented</h2>
+<ul>
+  <% @recently_commented_articles.each do |article| %>
+    <li><%= link_to article.title, article_path(article) %></li>
+    <!-- You can add more article details here -->
+  <% end %>
+</ul>
+
+<h2>Movies Rated</h2>
+<ul>
+  <% @ratings.each do |rating| %>
+    <li>
+      <%= link_to rating.article.title, article_path(rating.article) %>
+      - Rating Score: <%= rating.score %>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to 'Show Python Script Output', show_python_output_path(@user), class: 'btn' %>
+
+<%= link_to 'Edit Profile', edit_user_registration_path %>

@@ -1,0 +1,43 @@
+<p style="color: red"><%= alert %></p>
+<%= link_to 'My Profile', user_path(current_user) %>
+<h1>Articles</h1>
+
+<%= link_to 'Sign out', destroy_user_session_path, method: :delete %>
+<%= link_to 'Edit profile', edit_user_registration_path %>
+
+<br/>
+Our blog has <%= Article.public_count %> articles and counting!
+
+<%= search_form_for @q do |f| %>
+  <%= f.label :title_cont %>
+  <%= f.search_field :title_cont %>
+  
+  <br/>
+  <%= f.label :year_gteq, 'Year from' %>
+  <%= f.number_field :year_gteq, in: 1900..Date.today.year %>
+
+  <%= f.label :year_lteq, 'Year to' %>
+  <%= f.number_field :year_lteq, in: 1900..Date.today.year %>
+  <br/>
+  <%= f.label :tags_id_eq, 'Tag' %>
+	<%= f.collection_select :tags_id_in, Tag.all, :id, :name, {}, { multiple: true, include_blank: true } %>
+  <%= f.submit "Search" %>
+  <br/>
+  <%= f.sort_link :title, 'Alphabetical Sorting' %>
+
+<% end %>
+
+<%= sort_link(@q, :average_rating, 'Average Rating') %>
+
+<ul>
+	<% @articles.each do |x| %>
+	<% unless x.archived? %>
+		<li>
+			<a href='<%= article_path(x) %>'>
+			<%= x.title %>
+		</li>
+	<% end %>
+	<% end %>
+</ul>
+
+<%= link_to 'New Article', new_article_path %>
