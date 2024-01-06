@@ -1,34 +1,53 @@
 <h1>User Profile</h1>
 
 <p>Username: <%= @user.username %></p>
-<p>Email: <%= @user.email %></p>
 
-<h2>My Favourites</h2>
-<ul>
-  <% @liked_articles.each do |article| %>
-    <li><%= link_to article.title, article_path(article) %></li>
-    <!-- You can add more article details here -->
-  <% end %>
-</ul>
+<% if current_user == @user || @user.favshare || admin_user? %>
+  <h2>My Favourites</h2>
+  <ul>
+    <% @liked_articles.each do |article| %>
+      <li><%= link_to article.title, article_path(article) %></li>
+      <!-- You can add more article details here -->
+    <% end %>
+  </ul>
+<% end %>
 
-<h2>Recently Commented</h2>
-<ul>
-  <% @recently_commented_articles.each do |article| %>
-    <li><%= link_to article.title, article_path(article) %></li>
-    <!-- You can add more article details here -->
-  <% end %>
-</ul>
+<% if current_user == @user || @user.historyshare || admin_user? %>
+  <h2>Recently Commented</h2>
+  <ul>
+    <% @recently_commented_articles.each do |article| %>
+      <li><%= link_to article.title, article_path(article) %></li>
+      <!-- You can add more article details here -->
+    <% end %>
+  </ul>
+  
+  <h2>Movies Rated</h2>
+  <ul>
+    <% @ratings.each do |rating| %>
+      <li>
+        <%= link_to rating.article.title, article_path(rating.article) %>
+        - Rating Score: <%= rating.score %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
 
-<h2>Movies Rated</h2>
-<ul>
-  <% @ratings.each do |rating| %>
-    <li>
-      <%= link_to rating.article.title, article_path(rating.article) %>
-      - Rating Score: <%= rating.score %>
-    </li>
-  <% end %>
-</ul>
+<% if current_user == @user || @user.contactshare || admin_user? %>
+  <div class="user-info">
+  
+    <p><strong>Email:</strong> <%= @user.email %></p>
+  
+    <% if @user.instagram.present? %>
+      <p><strong>Instagram:</strong> <%= @user.instagram %></p>
+    <% end %>
+  
+    <% if @user.phone.present? %>
+      <p><strong>Phone:</strong> <%= @user.phone %></p>
+    <% end %>
+<% end %>
 
-<%= link_to 'Show Python Script Output', show_python_output_path(@user), class: 'btn' %>
-
-<%= link_to 'Edit Profile', edit_user_registration_path %>
+<% if current_user == @user || admin_user? %>
+  <%= link_to 'Show Python Script Output', show_python_output_path(@user), class: 'btn' %>
+  
+  <%= link_to 'Edit Profile', edit_user_registration_path %>
+<% end %>

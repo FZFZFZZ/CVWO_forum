@@ -1,7 +1,7 @@
-<% unless comment.archived? %>
 <p>
   <strong>Commenter:</strong>
   <%= comment.user.username %>
+  <%= link_to comment.user.username, user_path(comment.user) %>
 </p>
 
 <p>
@@ -19,6 +19,10 @@
   <% end %>
 </p>
 
+<% if comment.spoiler %>
+    <p><strong>Warning:</strong> This comment contains spoilers.</p>
+<% end %>
+
 <p>
   <% if comment.user == current_user %>
     <%= link_to "Destroy Comment", [comment.article, comment], data: {
@@ -31,4 +35,3 @@
     <%= link_to 'Edit', edit_article_comment_path(comment.article, comment) %>
   <% end %>
 </p>
-<% end %>

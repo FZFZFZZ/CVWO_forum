@@ -9,6 +9,7 @@
 Our blog has <%= Article.public_count %> articles and counting!
 
 <%= search_form_for @q do |f| %>
+  
   <%= f.label :title_cont %>
   <%= f.search_field :title_cont %>
   
@@ -40,4 +41,6 @@ Our blog has <%= Article.public_count %> articles and counting!
 	<% end %>
 </ul>
 
-<%= link_to 'New Article', new_article_path %>
+<% if admin_user? %>
+  <%= link_to 'New Article', new_article_path %>
+<% end %>

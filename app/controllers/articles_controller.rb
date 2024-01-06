@@ -1,8 +1,14 @@
 class ArticlesController < ApplicationController
-  
+  before_action :check_admin, only: [:new, :destroy, :create]
+
   def index
     @q = Article.ransack(params[:q])
-    @articles = @q.result(distinct: true)
+    if params.dig(:q, :title_cont)
+      search_terms = params[:q][:title_cont]
+      @articles = Article.title_contains_words(search_terms)
+    else
+      @articles = @q.result(distinct: true)
+    end
 
 
     # Check if the query params include sorting by average rating
@@ -67,14 +73,21 @@ class ArticlesController < ApplicationController
 
   private
     def article_params
-      params.require(:article).permit(:title, :body, :year, :status, :tags, :Oid)
+      params.require(:article).permit(:title, :body, :year, :status, :tags)
     end
 
     def create_or_delete_articles_tags(article, tags)
       article.taggables.destroy_all
-      tags = tags.strip.split('|')
+      tags = tags.to_s.strip.split('|')
       tags.each do |tag|
         article.tags << Tag.find_or_create_by(name: tag)
+      end
+    end
+
+    def check_admin
+      unless admin_user?
+        flash[:alert] = "You are not authorized to access this page."
+        redirect_to articles_path
       end
     end
 end

@@ -5,11 +5,15 @@
   </p>
 
 <h2>Related Movies</h2>
-  <% @top_rated_articles.each do |article| %>
-    <a href="<%= article_path(article) %>">
-      <%= article.title %> 
+  <% if @top_rated_articles.present? %>
+    <% @top_rated_articles.each do |article| %>
+      <a href="<%= article_path(article) %>">
+      <%= article.title %>
       <br/>
     <% end %>
+  <% else %>
+    <p>No related movies found.</p>
+  <% end %>
 </div>
 
 

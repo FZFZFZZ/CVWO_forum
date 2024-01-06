@@ -36,6 +36,25 @@
     <%= f.password_field :current_password, autocomplete: "current-password" %>
   </div>
 
+  <div class="field">
+    <%= f.label :instagram %><br />
+    <%= f.text_field :instagram %>
+  </div>
+
+  <div class="field">
+    <%= f.label :phone %><br />
+    <%= f.telephone_field :phone %>
+  </div>
+
+  <%= f.check_box :favshare %>
+  <%= f.label :favshare, 'Share Favorites' %>
+
+  <%= f.check_box :contactshare %>
+  <%= f.label :contactshare, 'Share Contact Information' %>
+
+  <%= f.check_box :historyshare %>
+  <%= f.label :historyshare, 'Share History' %>
+
   <div class="actions">
     <%= f.submit "Update" %>
   </div>

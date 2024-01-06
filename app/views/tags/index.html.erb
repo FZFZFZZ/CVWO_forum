@@ -4,10 +4,9 @@
 
 <div id="tags">
   <% @tags.each do |tag| %>
-    <%= render tag %>
-    <p>
-      <%= link_to "Show this tag", tag %>
-    </p>
+    <%= link_to tag, style:'text-decoration:none' do %>
+      <span class='tag'><%= tag.name.capitalize %></span>
+    <% end %>
   <% end %>
 </div>
 

@@ -1,12 +1,11 @@
 class TagsController < ApplicationController
   before_action :set_tag, only: %i[ show edit update destroy ]
-
-  # GET /tags or /tags.json
+  before_action :check_admin, only: [:new, :edit, :create, :update, :destroy]
+  
   def index
     @tags = Tag.all
   end
 
-  # GET /tags/1 or /tags/1.json
   def show
     @tag = Tag.find(params[:id])
     @top_rated_articles = Article.joins(:ratings, :taggables)
@@ -17,17 +16,13 @@ class TagsController < ApplicationController
                                  .limit(10)
   end
 
-
-  # GET /tags/new
   def new
     @tag = Tag.new
   end
 
-  # GET /tags/1/edit
   def edit
   end
 
-  # POST /tags or /tags.json
   def create
     @tag = Tag.new(tag_params)
 
@@ -42,7 +37,6 @@ class TagsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /tags/1 or /tags/1.json
   def update
     respond_to do |format|
       if @tag.update(tag_params)
@@ -55,7 +49,6 @@ class TagsController < ApplicationController
     end
   end
 
-  # DELETE /tags/1 or /tags/1.json
   def destroy
     @tag.destroy!
 
@@ -66,13 +59,18 @@ class TagsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_tag
       @tag = Tag.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def tag_params
       params.require(:tag).permit(:name)
+    end
+
+    def check_admin
+      unless admin_user?
+        flash[:alert] = "You are not authorized to access this page."
+        redirect_to articles_path
+      end
     end
 end

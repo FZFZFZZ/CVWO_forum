@@ -9,7 +9,15 @@ class Article < ApplicationRecord
 	validates :title, presence: true
 	validates :body, presence: true, length: {minimum: 5}
 	validates :year, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1900}
-	validates :Oid, presence: true, numericality: { only_integer: true}
+	
+	scope :title_contains_words, -> (words) {
+    	where(
+    	  words.split.map { |word| 
+    	    sanitize_sql_for_conditions(["title LIKE ?", "%#{word}%"]) 
+    	  }.join(' AND ')
+    	)
+    }
+
 	ransacker :average_rating do
     	query = '(SELECT AVG(ratings.score) FROM ratings WHERE ratings.article_id = articles.id)'
     	Arel.sql(query)

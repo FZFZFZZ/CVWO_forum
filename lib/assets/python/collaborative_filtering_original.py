@@ -75,7 +75,7 @@ def main(y_file_path, r_file_path, u_file_path):
     b = tf.Variable(tf.random.normal((1,          nu),   dtype=tf.float32),  name='b')
     
     
-    # Instantiate an optimizer. 
+    # Instantiate an optimizer. Learning rate determined by learning rate annealing.
     optimizer = tf.keras.optimizers.legacy.Adam(learning_rate = 3e-3)
     
     

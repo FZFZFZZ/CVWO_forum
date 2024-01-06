@@ -1,12 +1,14 @@
 class User < ApplicationRecord
 
-  has_many :ratings
+  has_many :ratings, dependent: :destroy
   has_many :articles, through: :ratings
-  has_many :comments, dependent: :destroy
-  has_many :likes
+  has_many :comments, dependent: :nullify
+  has_many :likes, dependent: :destroy
   has_many :liked_articles, through: :likes, source: :likeable, source_type: 'Article'
   has_many :commented_articles, -> { distinct }, through: :comments, source: :article
-  
+  validates :favshare, :contactshare, :historyshare, inclusion: { in: [true, false] }
+  before_validation :set_default_sharing_preferences, on: :create
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -20,4 +22,13 @@ class User < ApplicationRecord
       where(conditions.to_h).first
     end
   end
+
+  private
+
+  def set_default_sharing_preferences
+    self.favshare = true if favshare.nil?
+    self.contactshare = true if contactshare.nil?
+    self.historyshare = true if historyshare.nil?
+  end
+
 end
