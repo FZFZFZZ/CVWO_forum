@@ -1,5 +1,6 @@
 <p style="color: green"><%= notice %></p>
 
+
 <% search = @article.title.gsub(" ", "%20") %>
 <%= link_to 'View Details in IMDb',
   "https://www.imdb.com/find/?q=#{search}&ref_=nv_sr_sm", class: 'btn', target: '_blank' %>

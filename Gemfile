@@ -5,6 +5,7 @@ ruby "3.2.2"
 
 gem "rails", "~> 7.1.2"
 
+gem 'webpacker'
 
 gem "sprockets-rails"
 
@@ -37,6 +38,9 @@ gem 'devise', '~> 4.9', '>= 4.9.3'
 
 
 gem "tzinfo-data", platforms: %i[ windows jruby ]
+
+
+gem "react-rails"
 
 
 gem "bootsnap", require: false

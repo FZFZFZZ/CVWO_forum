@@ -2,6 +2,12 @@
 <%= link_to 'My Profile', user_path(current_user) %>
 <h1>Articles</h1>
 
+<div id="hello-react-root">
+<%= javascript_pack_tag 'hello_react', 'data-turbolinks-track': 'reload' %>
+</div>
+
+
+
 <%= link_to 'Sign out', destroy_user_session_path, method: :delete %>
 <%= link_to 'Edit profile', edit_user_registration_path %>
 
