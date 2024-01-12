@@ -2,6 +2,9 @@
   "dependencies": {
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.4",
     "@rails/webpacker": "5.4.4",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "prop-types": "^15.8.1",
