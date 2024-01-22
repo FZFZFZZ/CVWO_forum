@@ -14,11 +14,5 @@
  *= require_self
  */
 
-.tag {
-	background: #0045c6;
-	color: #FFF;
-	padding: 0.5em;
-	margin: 0.5em;
-	border-radius: 0.25em;
-	display: inline-block;
-}
+@import "trix/dist/trix";
+

@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :liked_articles, through: :likes, source: :likeable, source_type: 'Article'
   has_many :commented_articles, -> { distinct }, through: :comments, source: :article
+  has_many :like_comments, dependent: :destroy
   validates :favshare, :contactshare, :historyshare, inclusion: { in: [true, false] }
   before_validation :set_default_sharing_preferences, on: :create
 

@@ -9,6 +9,8 @@ class Article < ApplicationRecord
 	validates :title, presence: true
 	validates :body, presence: true, length: {minimum: 5}
 	validates :year, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 1900}
+
+	attr_accessor :poster_url
 	
 	scope :title_contains_words, -> (words) {
     	where(

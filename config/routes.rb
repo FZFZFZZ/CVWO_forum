@@ -1,13 +1,19 @@
 Rails.application.routes.draw do
   
+  get '/stats/chart_data', to: 'stats#chart_data'
+
   devise_for :users, controllers: { registrations: 'users/registrations' }
 
   resources :tags
     root 'articles#home'
 
   resources :articles do 
-    resources :comments, only: [:create, :edit, :update, :destroy]
+    resources :comments, only: [:create, :edit, :update, :destroy, :new]
     resources :ratings, only: [:create, :edit, :update]
+  end
+
+  resources :comments do
+    resources :like_comments, only: [:create, :destroy]
   end
   
   # get 'export_ratings_to_csv', to: 'exports#export_ratings_to_csv'

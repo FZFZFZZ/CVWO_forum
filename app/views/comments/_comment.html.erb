@@ -1,37 +1,101 @@
-<p>
-  <strong>Commenter:</strong>
-  <%= comment.user.username %>
-  <%= link_to comment.user.username, user_path(comment.user) %>
-</p>
+<style>
+  .comment-time {
+    font-size: 0.8em !important; 
+    color: grey !important;
+    margin-bottom: 5px !important;
+  }
 
-<p>
-  <strong>Comment:</strong>
-  <%= comment.body %>
-</p>
+  .user {
+    color: grey !important;
+  }
 
-<%= render partial: 'likes/button', locals: { likeable: comment } %>
+  .likes {
+    float: right;
+    font-size: 1em !important;
+  }
 
-<p class="comment-time">
-  <% if Time.current - comment.created_at > 24.hours %>
-    Posted <%= comment.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
-  <% else %>
-    Posted <%= time_ago_in_words(comment.created_at) %> ago
-  <% end %>
-</p>
+  .image-button-l {
+      background: none !important;
+      padding: 0em !important;
+      margin: 0em !important;
+      border: 0em !important;
+      display: flex;
+      height: 30px !important;
+      width: 30px !important;
+  }
+  
+  .image-button-l-icon {
+    width: 100%;
+    height: 100%;
+  }
 
-<% if comment.spoiler %>
-    <p><strong>Warning:</strong> This comment contains spoilers.</p>
-<% end %>
+  .body {
+    margin-bottom: 20px !important;
+  }
 
-<p>
-  <% if comment.user == current_user %>
-    <%= link_to "Destroy Comment", [comment.article, comment], data: {
-                  turbo_method: :delete,
-                  turbo_confirm: "Are you sure?"
-                } %>
-  <% end %>
+</style>
 
-  <% if comment.user == current_user %>
-    <%= link_to 'Edit', edit_article_comment_path(comment.article, comment) %>
-  <% end %>
-</p>
+<div class="container my-3">
+  <div class="card">
+    <div class="card-body">
+
+      <% if comment.spoiler %>
+          <p class="alert alert-warning"><strong>Warning:</strong> This review may contain spoilers.</p>
+      <% end %>
+
+      <p class="card-text comment-time">
+        <% if Time.current - comment.created_at > 24.hours %>
+            Posted <%= comment.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+        <% else %>
+            Posted <%= time_ago_in_words(comment.created_at) %> ago
+        <% end %>
+      </p>
+
+      <p class="card-text user">
+        <% if current_user != comment.user %>
+           <strong><%= link_to comment.user.username, user_path(comment.user), class: "text-decoration-none", style: "font-size: 1.5em;" %></strong>
+        <% else %>
+           You
+        <% end %>
+        <% user_rating = comment.user.ratings.find_by(article: @article) %>
+        <% if user_rating %>
+          rated this movie <strong><%= user_rating.score %></strong> / 5.0
+        <% else %>
+          has not rated this movie yet
+        <% end %>
+        <span class="likes">Likes: <%= comment.like_comments.count %></span>
+      </p>
+
+      <p class="card-text body">
+        <%= comment.body.strip %>
+      </p>
+
+      <div class="d-flex justify-content-between">
+        <div>
+          <% if comment.user == current_user || admin_user? %>
+            <%= form_with url: article_comment_path(@article, comment), method: :delete, class: "d-inline" do %>
+              <%= submit_tag 'Delete', class: "btn btn-danger btn-sm" %>
+            <% end %>
+            <%= link_to 'Edit', edit_article_comment_path(comment.article, comment), class: "btn btn-primary btn-sm ms-2" %>
+          <% end %>
+        </div>
+      
+        <div>
+          <% like = comment.like_comments.find_by(user: current_user) %>
+            <% if like %>
+            <%= button_to comment_like_comment_path(comment, like), method: :delete, class: "image-button-l" do %>
+              <%= image_tag('Like.png', alt: 'Unlike', class: 'image-button-l-icon') %>
+            <% end %>
+          <% else %>
+            <%= button_to comment_like_comments_path(comment), method: :post, class: "image-button-l" do %>
+              <%= image_tag('Unlike.png', alt: 'Like', class: 'image-button-l-icon') %>
+            <% end %>
+
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+

@@ -8,18 +8,24 @@ class CommentsController < ApplicationController
     @article = Article.find(params[:article_id])
     @comment = @article.comments.new(comment_params)
     @comment.user = current_user
-
+    
     if @comment.save
-      redirect_to article_path(@article)
+      redirect_to article_path(@article), notice: 'Comment was successfully created.'
     else
+      render :new
     end
+  end
+
+  def new
+    @article = Article.find(params[:article_id])
+    @comment = Comment.new
   end
 
   def update
     @article = Article.find(params[:article_id])  # Find the parent article
     @comment = @article.comments.find(params[:id]) # Find the comment
   
-    if @comment.user == current_user
+    if @comment.user == current_user || admin_user? 
       if @comment.update(comment_params)
         redirect_to article_path(@comment.article), notice: 'Comment was successfully updated.'
       else
@@ -39,7 +45,7 @@ class CommentsController < ApplicationController
     @article = Article.find(params[:article_id])
     @comment = @article.comments.find(params[:id])
 
-    if @comment.user == current_user
+    if @comment.user == current_user || admin_user? 
       @comment.destroy
       redirect_to article_path(@article), notice: 'Comment was successfully deleted.', status: :see_other
     else

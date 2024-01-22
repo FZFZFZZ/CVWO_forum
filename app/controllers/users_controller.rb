@@ -4,11 +4,12 @@ class UsersController < ApplicationController
   require 'csv'
 
   def show
+
     @user = User.find(params[:id])
   
     @rated_articles = @user.ratings.includes(:article).map(&:article)
     @ratings = @user.ratings.includes(:article)
-    @liked_articles = @user.liked_articles
+    @liked_articles = @user.liked_articles.page(params[:page]).per(8)
     @recently_commented_articles = @user.commented_articles.order('comments.created_at DESC').limit(10)
   
   end

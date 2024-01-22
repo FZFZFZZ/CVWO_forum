@@ -1,71 +1,571 @@
-<p style="color: green"><%= notice %></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+
+  <style>
 
 
-<% search = @article.title.gsub(" ", "%20") %>
-<%= link_to 'View Details in IMDb',
-  "https://www.imdb.com/find/?q=#{search}&ref_=nv_sr_sm", class: 'btn', target: '_blank' %>
+    body {
+      background-color: rgba(244, 244, 244, 1);
+      padding-top: 0;
+      overscroll-behavior-y: none;
+    }
 
-<%= link_to 'Search Page', articles_path, class: 'btn', method: :get %>
+    hr {
+      border: none;
+      height: 1.5px;
+      background-color: grey;
+      margin-top: 50px !important;
+      margin-bottom: 40px !important;
+    }
 
-<%= link_to 'My Profile', user_path(current_user) %>
+    .sort {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-<h1><%= @article.title %></h1>
-<p><%= @article.body %></p>
 
-<%= render partial: 'likes/button', locals: { likeable: @article } %>
+    .unselectable {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
 
-<p>
-  <strong>Year:</strong>
-  <%= @article.year %>
-</p>
+    .tag {
+      padding: 0em;
+      margin: 0em;
+      border-radius: 1em;
+      display: inline-block;
+    }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .hoverable {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tipshown {
+      visibility: hidden;
+      opacity: 0;
+      width: auto;
+      max-width: 200px;
+      white-space: nowrap;
+      padding: 3px 6px;
+      background-color: white;
+      color: black;
+      text-align: center;
+      border-radius: 2px;
+      position: absolute;
+      top: 80%;
+      z-index: 10;
+      left: -60%;
+      transform: translateX(-50%);
+      transition: opacity 0.1s, visibility 0.1s;
+      font-size: 13px;
+    }
+    
+    
+    .hoverable:hover .tipshown {
+      visibility: visible;
+      opacity: 1;
+    }
 
-<p>
-  <strong>Average Rating:</strong>
-  <% if @average_rating %>
-    <%= sprintf('%.2f', @average_rating) %><br/>
-    <%= @article.ratings.count %> people have rated.
-  <% else %>
-    No one has rated it yet
-  <% end %>
-</p>
+    .tag {
+      margin-right: 10px;
+      background: transparent;
+      padding: 0em;
+      margin: 0em;
+      border-radius: 1em;
+      display: inline-block;
+    }
 
-<% if user_signed_in? %>
-  <% if @user_rating %>
-    <p>You have rated this movie: <%= @user_rating.score %>/5.0</p></p>
-  <% end %>
-    <% rating = @user_rating || @article.ratings.build %>
-    <%= form_with model: [ @article, rating ], local: true do |form| %>
-      <div class="field">
-        <%= form.label :score %>
-        <%= form.number_field :score, value: rating.score, in: 0..5, step: 0.1, class: '  form-control' %>
+    .intro {
+      position: relative;
+      margin-top: 0;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0),
+                                            rgba(0, 0, 0, 0.2),
+                                            rgba(0, 0, 0, 0.6),
+                                            rgba(0, 0, 0, 0.8), 
+                                            rgba(0, 0, 0, 0.8), 
+                                            rgba(0, 0, 0, 0.8), 
+                                            rgba(0, 0, 0, 0.8), 
+                                            rgba(0, 0, 0, 0.8),
+                                            rgba(0, 0, 0, 0.8),
+                                            rgba(0, 0, 0, 0.8),
+                                            rgba(0, 0, 0, 0.6),
+                                            rgba(0, 0, 0, 0.2),
+                                            rgba(0, 0, 0, 0));
+      padding: 0px 0px;
+      color: lightcyan;
+      margin: auto;
+      max-width: 100% !important;
+    }
+
+    .intro::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      <% if @movie_data.present? && @poster_url.present? %>
+        background-image: url('<%= @poster_url %>');
+      <% end %>
+      background-size: cover; /* Or any other sizing you prefer */
+      background-position: center;
+      z-index: -1; /* Ensures the image is behind the content of .intro */
+    }
+
+    .title {
+        padding-top: 200px !important;
+        color: #ffffff;
+        font-size: 70px;
+        text-align: center;
+        text-transform: uppercase;
+        font-family: fantasy;
+        font-weight: bold;
+        opacity: 0;
+        animation: fadeIn 1.5s ease-in-out forwards;
+        transform: perspective(500px) rotateX(5deg);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {-
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .title:hover {
+        transform: perspective(500px) rotateX(0deg);
+    }
+
+    .textbody {
+        padding-top: 40px !important;
+        color: lightcyan;
+        font-size: 25px;
+        text-align: center;
+        font-family: 'Garamond', serif;
+        opacity: 0;
+        animation: fadeIn 2.5s ease-in-out forwards;
+        max-width: 1030px !important;
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    .year {
+        padding-top: 50px !important;
+        padding-left: 170px !important;
+        padding-right: 170px !important;
+        color: lightgrey;
+        text-align: left;
+        opacity: 0;
+        animation: fadeIn 3.0s ease-in-out forwards;
+        font-size: 18px; 
+        font-family: 'Lucida Handwriting', cursive !important;
+    }
+
+    .score {
+        font-size: 80px;
+        font-family: "Sofia", sans-serif;
+
+    }
+
+
+    .notice {
+        font-size: 30px;
+        color: red;
+
+    }
+
+    .score-cat0 {
+        background: -webkit-linear-gradient(red, orange);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .score-cat1 {
+        background: -webkit-linear-gradient(orange, yellow);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .score-cat2 {
+        background: -webkit-linear-gradient(yellow, lightgreen);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .score-cat3 {
+        background: -webkit-linear-gradient(lightgreen, cyan);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .score-cat4 {
+        background: -webkit-linear-gradient(cyan, white);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .score-cat5 {
+        background: -webkit-linear-gradient(gold, gold);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+  input[type="range"]::-webkit-slider-thumb {
+    background-color: white;
+    border: 1.5px solid white;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, red 0%, orange 20%,
+                                          yellow 40%, lightgreen 60%,
+                                          cyan 80%, white 100%); /* Default color is red */
+    height: 5px;
+    border-radius: 2px;
+  }
+
+  .spacer {
+    height: 180px;
+    background: linear-gradient(to bottom, rgba(244, 244, 244, 0),
+                                      rgba(244, 244, 244, 0.3),
+                                      rgba(244, 244, 244, 1));
+    max-width: 100% !important;
+
+  }
+
+  .comment-container {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1000px !important;
+    font-family: 'Lucida Handwriting', cursive;
+  }
+
+  .header {
+    color: rgba(0, 0, 0, 0.7);
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 15px;
+    font-size: 60px;
+    font-weight: bold;
+  }
+
+  .inline-form {
+    display: inline;
+  }
+  
+  .image-button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 75px;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .image-button img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  
+  .image-button:hover {
+    opacity: 0.6;
+  }
+
+  .addcomment {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+  }
+
+  .sort-link {
+    padding: 7px 12px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    color: rgba(255, 255, 255, 1);
+    text-decoration: none;
+    transition: color 0.3s, background-color 0.3s;
+  }
+  
+  .sort-link:hover {
+    background-color: #e9ecef;
+    color: grey;
+  }
+  
+  .sort-newest {
+    background-color: rgba(15, 82, 186, 0.7);
+  }
+  
+  .sort-likes {
+    background-color: rgba(255, 102, 102, 0.9);
+  }
+
+
+</style>
+
+</head>
+
+<body>
+<%= render partial: 'navbar', locals: { search: @search } %>
+
+<div class="container intro">
+     
+      <div class="container title unselectable"><%= @article.title %></div>
+      <div class="container textbody unselectable"><%= @article.body %></div>
+     
+      <%= render partial: 'likes/button', locals: { likeable: @article } %>
+
+      <div class="container year unselectable">
+        <p><strong>Year</strong> &nbsp; <%= @article.year %></p>
+        <p> 
+          <% @article.tags.each do |tag| %>
+            <%= link_to tag, style: 'text-decoration:none' do %>
+              <span class='tag unselectable'>
+                  <%= image_tag tag_image_path(tag.name), width: '45', height: '45' %>
+              </span>
+              &nbsp;
+            <% end %>
+          <% end %>
+        </p>
+        <p>
+          <%= link_to "Edit Preface", edit_article_path(@article), class: "btn btn-outline-secondary btn-sm unselectable" %> 
+          <% if admin_user? %>
+              <%= button_to "Delete This Movie", 
+              article_path(@article), 
+              method: :delete, 
+              data: { confirm: "Are you sure?" }, 
+              class: "btn btn-outline-secondary btn-sm unselectable",
+              form: { class: "inline-form" } %>
+
+
+          <% end %>
+        </p>
+        <hr>
+        <div class="container text-center unselectable">
+          <div class="row">
+            <div class="col">
+              <% if user_signed_in? %>
+                  <% if @user_rating %>
+                      <span id="currentValue" class="score score-cat<%= @user_rating.score.floor %> unselectable">
+                        <%= sprintf('%.2f', @user_rating.score) %>
+                      </span>
+                      <br/>
+                      rated by <strong>you</strong>
+                  <% else %>
+                      You have not rated this movie
+                  <% end %>
+
+                  <% rating = @user_rating || @article.ratings.build %>
+              
+                  <%= form_with model: [@article, rating], local: true do |form| %>
+                    <div class="field">
+                      &nbsp;
+                      <input type="range" class="form-range" min="0" max="5" step="0.5" id="customRange3" name="rating[score]"
+                           value="<%= rating.score %>" oninput="updateSliderValue(this.value)">
+                    </div>
+                    <div class="actions unselectable">
+                      <%= form.submit @user_rating ? "Update" : "Submit Rating", class: 'btn btn-outline-warning btn-sm' %>
+                    </div>
+                  </form>
+                  <% end %>
+              <% end %>
+            </div>
+            <div class="col">
+              <% if @average_rating %>
+                <span class="score score-cat<%= @average_rating.floor %>">
+                  <%= sprintf('%.1f', @average_rating) %>
+                </span>
+                <br/>
+                rated by <strong><%= @article.ratings.count %></strong> <%= @article.ratings.count == 1 ? "person" : "people" %>
+              <% else %>
+                <strong>No one has rated it yet</strong>
+              <% end %>
+            </div>
+            <div class="col-6">
+               <canvas id="myChart" width="400" height="230"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="actions">
-        <%= form.submit @user_rating ? "Update Rating" : "Submit Rating", class: 'btn   btn-success' %>
-      </div>
-  <% end %>
-<% end %>
-
-<ul>
-  <li><%= link_to "Edit", edit_article_path(@article) %></li>
-  <% if admin_user? %>
-    <li><%= link_to "Destroy", article_path(@article), data: {
-                      turbo_method: :delete,
-                      turbo_confirm: "Are you sure?"
-                    } %></li>
-  <% end %>
-</ul>
+      <div class="spacer"></div>
+</div>
+<%# <div id="hello-react-root" data-article-title="<%= @article.title %>
+<%#  <%= javascript_pack_tag 'testt' %> 
+<%#</div> %>
 
 
-<strong>Tags:</strong>
-  <% @article.tags.each do |tag| %>
-    <%= link_to tag, style:'text-decoration:none' do %>
-      <span class='tag'><%= tag.name.capitalize %></span>
+
+
+
+
+
+<script>
+  function updateSliderValue(value) {
+
+    var formattedValue = parseFloat(value).toFixed(1);
+    
+    document.getElementById("currentValue").textContent = formattedValue;
+  }
+
+  // Initialize the slider value
+  updateSliderValue(<%= rating.score %>);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+  const ctx = document.getElementById('myChart');
+  const chartData = <%= @chart_data.to_json.html_safe %>;
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['0-1', '1-2', '2-3', '3-4', '4-5'],
+      datasets: [{
+        label: 'Σ User',
+        data: chartData,
+        borderWidth: 1,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(255, 165, 0, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(144, 238, 144, 0.2)',
+          'rgba(0, 255, 255, 0.2)' 
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 165, 0, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(144, 238, 144, 1)',
+          'rgba(0, 255, 255, 1)'
+        ]
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Score Range',
+            color: 'rgba(200, 200, 200, 1)',
+            font: {
+              size: 18,
+              family: "'Lucida Handwriting', cursive"
+            }
+          },
+          ticks: {
+            font: {
+              color: "rgba(190, 190, 190, 1)",
+              size: 15,
+              family: "'Lucida Handwriting', cursive"
+            }
+          }
+        },
+        y: {
+          grid: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Number of Ratings',
+            color: 'rgba(200, 200, 200, 1)',
+            font: {
+              size: 18,
+              family: "'Lucida Handwriting', cursive"
+            }
+          },
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            callback: function(value) {
+              return Number.isInteger(value) ? value : '';
+            },
+            font: {
+              color: "rgba(190, 190, 190, 1)",
+              size: 15,
+              family: "'Lucida Handwriting', cursive"
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+
+
+
+
+
+<div id="comment" class="comment-container">
+  
+  <div class='comment-container header unselectable'>REVIEWS</div>
+  <div class="addcomment">
+    <%= button_to new_article_comment_path(@article), method: :get, class: 'image-button', form: { class: 'inline-form' }, title: 'Add a new comment' do %>
+      <%= image_tag('Write.png', alt: 'Add Comment') %>
     <% end %>
+  </div>
+  <hr>
+  <div class="sort">
+    <%= link_to 'Sort by Time', article_path(@article, sort_order: 'newest_first'), id: 'sort-newest', class: 'sort-link sort-newest' %>
+    <%= link_to 'Sort by Likes', article_path(@article, sort_order: 'likes'), id: 'sort-likes', class: 'sort-link sort-likes' %>
+  </div>
+  &nbsp;
+  <% @comments.each do |comment| %>
+    <div>
+      <%= render 'comments/comment', comment: comment %>
+    </div>
   <% end %>
 
-<h2>Comments</h2>
-<%= render @comments %>
 
 
-<h2>Add your comment:</h2>
-<%= render 'comments/form' %>
+</div>
+
+
+</body>
+
+</html>
+

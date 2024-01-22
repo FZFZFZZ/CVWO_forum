@@ -1,53 +1,250 @@
-<h1>User Profile</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-<p>Username: <%= @user.username %></p>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<% if current_user == @user || @user.favshare || admin_user? %>
-  <h2>My Favourites</h2>
-  <ul>
-    <% @liked_articles.each do |article| %>
-      <li><%= link_to article.title, article_path(article) %></li>
-      <!-- You can add more article details here -->
-    <% end %>
-  </ul>
-<% end %>
+    <style>
+      body {
+        font-family: 'Lucida Handwriting', cursive;
+        background-color: rgba(244, 244, 244, 1);
+        overscroll-behavior-y: none;
+        margin-top: 80px !important;
+        text-align: center;
+      }
 
-<% if current_user == @user || @user.historyshare || admin_user? %>
-  <h2>Recently Commented</h2>
-  <ul>
-    <% @recently_commented_articles.each do |article| %>
-      <li><%= link_to article.title, article_path(article) %></li>
-      <!-- You can add more article details here -->
-    <% end %>
-  </ul>
-  
-  <h2>Movies Rated</h2>
-  <ul>
-    <% @ratings.each do |rating| %>
-      <li>
-        <%= link_to rating.article.title, article_path(rating.article) %>
-        - Rating Score: <%= rating.score %>
-      </li>
-    <% end %>
-  </ul>
-<% end %>
+      .tag {
+        padding: 0em;
+        margin: 0em;
+        border-radius: 1em;
+        display: inline-block;
+      }
 
-<% if current_user == @user || @user.contactshare || admin_user? %>
-  <div class="user-info">
-  
-    <p><strong>Email:</strong> <%= @user.email %></p>
-  
-    <% if @user.instagram.present? %>
-      <p><strong>Instagram:</strong> <%= @user.instagram %></p>
-    <% end %>
-  
-    <% if @user.phone.present? %>
-      <p><strong>Phone:</strong> <%= @user.phone %></p>
-    <% end %>
-<% end %>
+      .container {
+        padding: 40px !important;
+        justify-content: center;
+        align-items: center;
+      }
 
-<% if current_user == @user || admin_user? %>
-  <%= link_to 'Show Python Script Output', show_python_output_path(@user), class: 'btn' %>
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      
+      .hoverable {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .tipshown {
+        visibility: hidden;
+        opacity: 0;
+        width: auto;
+        max-width: 200px;
+        white-space: nowrap;
+        padding: 3px 6px;
+        background-color: white;
+        color: black;
+        text-align: center;
+        border-radius: 2px;
+        position: absolute;
+        top: 80%;
+        z-index: 10;
+        left: -60%;
+        transform: translateX(-50%);
+        transition: opacity 0.1s, visibility 0.1s;
+        font-size: 13px;
+      }
+      
+      
+      .hoverable:hover .tipshown {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .card-title {
+        margin-top: 10px !important;
+        margin-bottom: 10px;
+      }
+
+      .custom-image {
+        margin-top: 20px;
+        width: 30%;
+        height: auto;
+      }
+
+    </style>
+
+    </head>
   
-  <%= link_to 'Edit Profile', edit_user_registration_path %>
-<% end %>
+  <body>
+  <%= render partial: 'layouts/navall' %>
+
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="card" style="width: 18rem;">
+          <%= image_tag('user.png', class: 'card-img-top', alt: 'Descriptive alt text') %>
+          <div class="card-body">
+            <h4 class="card-title"><%= @user.username %></h4>
+          </div>
+          <% if current_user == @user || @user.contactshare || admin_user? %>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                  <%= image_tag('email.png', class: 'flex-shrink-0', style: 'width: 30px;', alt: 'Descriptive alt text') %>
+                  <span class="ms-2"><%= @user.email %></span>
+                </div>
+              </li>
+              <% if @user.instagram.present? %>
+                <li class="list-group-item">
+                  <div class="d-flex align-items-center">
+                    <%= image_tag('instagram.png', class: 'flex-shrink-0', style: 'width: 30px;', alt: 'Descriptive alt text') %>
+                    <span class="ms-2"><%= @user.instagram %></span>
+                  </div>
+                </li>
+              <% end %>
+              <% if @user.phone.present? %>
+                <li class="list-group-item">
+                  <div class="d-flex align-items-center">
+                    <%= image_tag('phone.png', class: 'flex-shrink-0', style: 'width: 30px;', alt: 'Descriptive alt text') %>
+                    <span class="ms-2"><%= @user.phone %></span>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+          <% if current_user == @user || admin_user? %>  
+            <div class="card-body">
+              <%= link_to 'Edit Profile', edit_user_registration_path, class:"btn btn-outline-dark" %>
+            </div>
+          <% end %>
+        </div>
+
+        <% if current_user == @user || admin_user? %>
+          <div class="card" style="width: 18rem; margin-top: 20px;">
+            <div class="d-flex justify-content-center">
+              <%= image_tag('ai.png', class: 'card-img-top custom-image', alt: 'Descriptive alt text') %>
+            </div>
+            <div class="card-body">
+              <p class="card-text" style="text-align: left;">
+                Based solely on a public rating database and your rating record, an algorithm has been developed to recommend you movies that suit your appetite.
+              </p>
+              <p class="card-text" style="color:grey; font-size:12px; text-align: left;">
+                Your own rating record will not be used to train for others' movie recommendation.
+              </p>
+              <p class="card-text"><%= link_to 'Run Algorithm', show_python_output_path(@user), class: 'btn btn-outline-danger' %></p>
+            </div>
+          </div>
+        <% end %>
+
+      </div>
+      <div class="col-sm-9">
+        <div class="row">
+          <div class="col-8 col-sm-6">
+            <div class="card">
+              <% if current_user == @user || @user.favshare || admin_user? %>
+                <div class="card-body">
+                  <h3 class="card-title" style="margin-top: 30px !important;">Favourites</h3>
+                      <div class='container'>
+                        <ul class="list-group">
+                          <% @liked_articles.each do |article| %>
+                            <li class="list-group-item", style="text-align: left;">
+                              <%= link_to article.title, article_path(article), class: 'text-decoration-none', style: 'font-weight: bold;' %>
+                              <span style="color: rgba(0, 0, 0, 0.5);">(<%= article.year %>)</span>
+                              &nbsp;
+                              <p style="margin-top: 0px; margin-bottom: 2px;">
+                                <% article.tags.each do |tag| %>
+                                  <%= link_to tag, style: 'text-decoration:none' do %>
+                                    <span class='tag'>
+                                        <%= image_tag tag_image_path(tag.name), width: '30', height: '30' %>
+                                    </span>
+                                    &nbsp;
+                                  <% end %>
+                                <% end %>
+                              </p>
+                            </li>
+                          <% end %>
+                        </ul>
+                        <br/>
+                        <%= paginate @liked_articles %>
+                      </div>
+                </div>
+              <% else %>
+                <div class="card-body">
+                  The user has chosen to hide Favourites.
+                </div>
+              <% end %>
+            </div>
+          </div>
+          <div class="col-4 col-sm-6">
+            <div class="card">
+              <% if current_user == @user || @user.historyshare || admin_user? %>
+                <div class="card-body">
+                  <h3 class="card-title" style="margin-top: 30px !important;">Recently Commented</h3>
+                      <div class='container'>
+                        <ul class="list-group">
+                          <% @recently_commented_articles.each do |article| %>
+                            <li class="list-group-item", style="text-align: left;">
+                              <%= link_to article.title, article_path(article), class: 'text-decoration-none', style: 'font-weight: bold;' %>
+                              <span style="color: rgba(0, 0, 0, 0.5);">(<%= article.year %>)</span>
+                              &nbsp;
+                              <p style="margin-top: 0px; margin-bottom: 2px;">
+                                <% article.tags.each do |tag| %>
+                                  <%= link_to tag, style: 'text-decoration:none' do %>
+                                    <span class='tag'>
+                                        <%= image_tag tag_image_path(tag.name), width: '30', height: '30' %>
+                                    </span>
+                                    &nbsp;
+                                  <% end %>
+                                <% end %>
+                              </p>
+                            </li>
+                          <% end %>
+                        </ul>
+                        <br/>
+                      </div>
+                </div>
+              <% else %>
+                <div class="card-body">
+                  The user has chosen to hide comment history.
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="card", style="margin-top: 20px">
+          <div class="card-body">
+              <% if current_user == @user || @user.historyshare || admin_user? %>
+                <div class="card-body">
+                  <h3 class="card-title">Rating History</h3>
+                      <div class='container'>
+                        <ul class="list-group">
+                          <% @ratings.each do |rating| %>
+                            <li class="list-group-item", style="text-align: left;">
+                              <%= link_to rating.article.title, article_path(rating.article), class: 'text-decoration-none', style: 'font-weight: bold;'%>
+                              : <%= rating.score %> <span style="color: lightgrey">/ 5.0</span>
+                            </li>
+                          <% end %>
+                        </ul>
+                      </div>
+                </div>
+              <% else %>
+                <div class="card-body">
+                  The user has chosen to hide rating history.
+                </div>
+              <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
