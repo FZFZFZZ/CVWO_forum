@@ -80,7 +80,7 @@ def main(y_file_path, r_file_path, u_file_path):
     
     
     # Start Learning!!!!!!!!!!!!!!!!!!!!!!!
-    iterations = 20
+    iterations = 2000
     lambda_ = 1
     for iter in range(iterations):
         with tf.GradientTape() as tape:

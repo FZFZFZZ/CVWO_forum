@@ -139,9 +139,13 @@
               <p class="card-text" style="color:grey; font-size:12px; text-align: left;">
                 Your own rating record will not be used to train for others' movie recommendation.
               </p>
-              <p class="card-text"><%= link_to 'Run Algorithm', show_python_output_path(@user), class: 'btn btn-outline-danger' %></p>
+              <p class="card-text">
+                <%= link_to 'Run Algorithm', show_python_output_path(@user), class: 'btn btn-outline-danger', id: "runAlgorithmBtn" %>
+                <div id="progressBarContainer" style="width: 100%; background-color: #ddd; display: none;">
+                    <div id="progressBar" style="width: 0%; height: 20px; background-color: #4CAF50;"></div>
+                </div>
+              </div>
             </div>
-          </div>
         <% end %>
 
       </div>
@@ -245,6 +249,24 @@
       </div>
     </div>
   </div>
+<script>
+    document.getElementById('runAlgorithmBtn').addEventListener('click', function() {
+        var progressBar = document.getElementById('progressBar');
+        var container = document.getElementById('progressBarContainer');
+        container.style.display = 'block';
+        var width = 0;
+        var interval = setInterval(function() {
+            if (width >= 100) {
+                clearInterval(interval);
+            } else {
+                width++;
+                progressBar.style.width = width + '%';
+            }
+        }, 1000);
+
+        window.location.href = '<%= show_python_output_path(@user) %>';
+    });
+</script>
 
 </body>
 </html>

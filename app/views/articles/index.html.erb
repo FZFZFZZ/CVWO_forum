@@ -102,9 +102,6 @@
   <body>
     <%= render partial: 'layouts/navall' %>
 
-
-<p style="color: red"><%= alert %></p>
-
     <div class='container search'>
 
       <span class='logo'><%= image_tag 'Logo.png', alt: 'Logo', width: '250', height: '250' %></span>
@@ -116,7 +113,7 @@
             <i class="fa fa-search" style="color: gold; font-size: 30px;"></i> <strong style="color: gold; font-size: 1.5em;">SEARCH</strong>
           <% end %>
           <%= f.search_field :title_cont, class: 'form-control', style: 'height: 50px;', 
-                                          placeholder: 'Movie name contains...?' %>
+                                          placeholder: 'Try "interstellar"' %>
         </div>
         
         <br/>

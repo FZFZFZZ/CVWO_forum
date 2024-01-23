@@ -1,16 +1,202 @@
-<h1>HELLO</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Background</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
 
-<%= link_to 'Sign up', new_user_registration_path %>
-<%= link_to 'Sign in', new_user_session_path %>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 90%;
+            overscroll-behavior-y: none;
+        }
+
+        @keyframes scaleUp {
+		    from {
+		        transform: scale(0.3);
+		    }
+		    to {
+		        transform: scale(1);
+		    }
+		}
+
+		@keyframes fadeIn {
+		    from {
+		        opacity: 0;
+		    }
+		    to {
+		        opacity: 1;
+		    }
+		}
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+		.content {
+		    display: flex;           
+		    flex-direction: column;  
+		    justify-content: center;
+		    align-items: center;     
+		    height: 100vh;           
+		    color: white;
+		    text-align: center;
+		    font-family: 'Lucida Handwriting', cursive;
+		}
+
+		.centered-text {
+		    font-size: 80px;
+		    animation: scaleUp 1s ease-in-out, fadeIn 2s ease-in;
+		}
+
+		.sci-fi-btn {
+		  display: inline-block;
+		  padding: 8px 18px;
+		  margin: 5px;
+		  border: 2px solid rgba(41, 217, 213, 0.7);
+		  background-color: rgba(41, 217, 213, 0.12);
+		  color: #29d9d5;
+		  text-transform: uppercase;
+		  font-size: 12px;
+		  letter-spacing: 1.5px;
+		  transition: background-color 0.3s, color 0.3s;
+		  text-decoration: none;
+		  border-radius: 5px;
+		  animation: fadeIn 6s ease-in;
+		}
+		
+		.sci-fi-btn:hover {
+		  background-color: #29d9d5;
+		  color: #000;
+		  text-shadow: 0 0 10px rgba(41, 217, 213, 0.7);
+		}
+
+    	.unselectable {
+    	  -webkit-user-select: none;
+    	  -moz-user-select: none;
+    	  -ms-user-select: none;
+    	  user-select: none;
+    	}
+
+    </style>
+
+</head>
+<body>
+
+    <div class="content unselectable">
+        <h1 class="centered-text">WELCOME</h1>
+        <div>
+            <%= link_to 'Sign Up', new_user_registration_path, class: 'sci-fi-btn' %>
+            &nbsp;
+            <%= link_to 'Sign In', new_user_session_path, class: 'sci-fi-btn' %>
+        </div>
+    </div>
+
+
 <script>
-	function setup() {
-  createCanvas(400, 400);
+
+class Particle {
+// setting the co-ordinates, radius and the
+// speed of a particle in both the co-ordinates axes.
+  constructor(){
+    this.x = width / 2 + random(-180 , 180);
+    this.y = height / 2 + random(0, 0) - 50;
+    this.r = 5;
+    this.xSpeed = 0;
+    this.ySpeed = 0;
+    this.l = 2000;
+  }
+
+// creation of a particle.
+  createParticle() {
+    noStroke();
+    let dynamicColor = getColor(1);
+    fill(dynamicColor);
+    circle(this.x,this.y,this.r);
+  }
+
+// setting the particle in motion.
+  moveParticle() {
+  	let deltax = abs(this.x - width/2);
+    let k = 0.00001 * 0.1 * getK(1) + 0.000001;
+    let a = Math.pow(this.l, 2) - Math.pow(deltax, 2);
+    let b = Math.pow(this.l, 2) - Math.pow(width/2, 2);
+  	let deltaxspeed= k * sqrt(a * (sqrt(a) - sqrt(b)));
+    if(this.x > width/2)
+      deltaxspeed*= -1;
+  	this.xSpeed+=deltaxspeed;
+  	if(this.x < 0)
+      this.xSpeed=1;
+    if(this.x > width)
+      this.xSpeed=-1;
+    this.x+=this.xSpeed;
+    this.ySpeed= this.xSpeed;
+    this.y+= getK(0) * 0.2* this.ySpeed + random(-getK(1), getK(1));
+    if (millis() > 1200 && this.xSpeed > 2 && this.r < 30) // xSpped '<' clockwise, '>' anticlockwise
+       this.r+= (deltaxspeed) * 2;
+  }
+
+// this function creates the connections(lines)
+// between particles which are less than a certain distance apart
+  joinParticles(particles) {
+    particles.forEach(element =>{
+      let dis = dist(this.x,this.y,element.x,element.y);
+      if(dis < 65) {
+        stroke('rgba(255,255,255,0.2)');
+        line(this.x,this.y,element.x,element.y);
+      }
+    });
+  }
 }
+
+let particles = [];
+
+function setup() {
+  let canvas = createCanvas(1680, 1000);
+  frameRate(100);
+  canvas.id('particleCanvas');
+  for(let i = 0;i<width/10;i++){
+    particles.push(new Particle());
+  }
+}
+
+function getColor(number) {
+  let currentTime = millis();
+  let greenValue = (sin(currentTime * 0.0001 * sqrt(2)) + 1) * 128;
+  let purpleValue = (sin(currentTime * 0.0001 * Math.PI) + 1) * 128;
+  let whiteValue = (cos(currentTime * 0.0005) + 1) * 60;
+  return number === 1
+                ? color(greenValue, random(200, 255), purpleValue)
+                : color(whiteValue, whiteValue, whiteValue);
+}
+
+function getK (number){
+   let currentTime = millis();
+   return number === 0
+          ? 1 - 9 / ((currentTime * 0.02 + 0.3333) ** 2) + 1 / (currentTime * 0.01 + 0.3333) ** 3
+          : 6 / ((currentTime + 1) * 0.001) + 1;
+}
+
 
 function draw() {
-  background(220);
-  ellipse(50, 50, 80, 80);
+  let dynamicColor = getColor(0);
+  background(dynamicColor);
+  for(let i = 0;i<particles.length;i++) {
+    particles[i].createParticle();
+    particles[i].moveParticle();
+    particles[i].joinParticles(particles.slice(i));
+  }
 }
+
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</body>
+</html>
+
