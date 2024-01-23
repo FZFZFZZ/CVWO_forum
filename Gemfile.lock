@@ -107,6 +107,8 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    dockerfile-rails (1.6.3)
+      rails (>= 3.0.0)
     drb (2.2.0)
       ruby2_keywords
     erubi (1.12.0)
@@ -171,6 +173,7 @@ GEM
     nokogiri (1.16.0-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
+    pg (1.5.4)
     psych (5.1.2)
       stringio
     public_suffix (5.0.4)
@@ -284,10 +287,12 @@ DEPENDENCIES
   csv
   debug
   devise (~> 4.9, >= 4.9.3)
+  dockerfile-rails (>= 1.6)
   importmap-rails
   jbuilder
   kaminari
   kaminari-bootstrap
+  pg (~> 1.5)
   puma (>= 5.0)
   rails (~> 7.1.2)
   ransack

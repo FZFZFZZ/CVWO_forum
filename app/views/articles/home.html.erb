@@ -37,6 +37,8 @@
             top: 0;
             left: 0;
             z-index: -1;
+            width: 100%;
+            height: 100%;
         }
 
 		.content {
@@ -90,7 +92,7 @@
 <body>
 
     <div class="content unselectable">
-        <h1 class="centered-text">WELCOME</h1>
+        <h1 class="centered-text">WELCOMEE</h1>
         <div>
             <%= link_to 'Sign Up', new_user_registration_path, class: 'sci-fi-btn' %>
             &nbsp;
@@ -158,7 +160,7 @@ class Particle {
 let particles = [];
 
 function setup() {
-  let canvas = createCanvas(1680, 1000);
+  let canvas = createCanvas(windowWidth, windowHeight);
   frameRate(100);
   canvas.id('particleCanvas');
   for(let i = 0;i<width/10;i++){
@@ -181,6 +183,10 @@ function getK (number){
    return number === 0
           ? 1 - 9 / ((currentTime * 0.02 + 0.3333) ** 2) + 1 / (currentTime * 0.01 + 0.3333) ** 3
           : 6 / ((currentTime + 1) * 0.001) + 1;
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }
 
 
