@@ -5,14 +5,11 @@ class ArticlesController < ApplicationController
   def index
     # Ransack search initialization
     @q = Article.ransack(params[:q])
-  
-    # Start with the base query
     articles_query = @q.result(distinct: true)
-  
-    # Additional filtering based on title if provided
+    
     if params.dig(:q, :title_cont)
-      search_terms = params[:q][:title_cont]
-      articles_query = articles_query.title_contains_words(search_terms)
+      search_terms = params[:q][:title_cont].downcase
+      articles_query = articles_query.where(Article.arel_table[:title].lower.matches("%#{search_terms}%"))
     end
   
     # Apply sorting

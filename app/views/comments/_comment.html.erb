@@ -53,15 +53,15 @@
 
       <p class="card-text user">
         <% if current_user != comment.user %>
-           <strong><%= link_to comment.user.username, user_path(comment.user), class: "text-decoration-none", style: "font-size: 1.5em;" %></strong>
+           <strong><%= link_to comment.user.username, user_path(comment.user), class: "text-decoration-none", style: "font-size: 1.5em;" %></strong> has
         <% else %>
-           You
+           You have
         <% end %>
         <% user_rating = comment.user.ratings.find_by(article: @article) %>
         <% if user_rating %>
           rated this movie <strong><%= user_rating.score %></strong> / 5.0
         <% else %>
-          has not rated this movie yet
+          not rated this movie yet
         <% end %>
         <span class="likes">Likes: <%= comment.like_comments.count %></span>
       </p>

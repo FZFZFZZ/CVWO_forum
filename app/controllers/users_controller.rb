@@ -10,7 +10,12 @@ class UsersController < ApplicationController
     @rated_articles = @user.ratings.includes(:article).map(&:article)
     @ratings = @user.ratings.includes(:article)
     @liked_articles = @user.liked_articles.page(params[:page]).per(8)
-    @recently_commented_articles = @user.commented_articles.order('comments.created_at DESC').limit(10)
+    @recently_commented_articles = @user.commented_articles
+                                .select('articles.*, comments.created_at AS comment_created_at')
+                                .joins(:comments)
+                                .order('comments.created_at DESC')
+                                .distinct
+                                .limit(10)
   
   end
 
