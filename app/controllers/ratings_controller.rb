@@ -6,6 +6,7 @@ class RatingsController < ApplicationController
     @rating = @article.ratings.new(rating_params)
     @rating.user = current_user
 
+
     if @rating.save
       redirect_to @article, notice: 'Your rating was successfully submitted.'
     else

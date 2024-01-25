@@ -3,19 +3,19 @@
     <span class="navbar-brand" style="font-family: 'Lucida Handwriting', cursive">Hello, <%= current_user.username %>!</span>
       <span class="greeting" style="color: lightgrey; font-size: 14px; font-family: 'Lucida Handwriting', cursive">
         <% current_time = Time.now %>
-        <% if current_time.hour >= 5 && current_time.hour < 9 %>
+        <% if current_time.hour >= 0 && current_time.hour < 1 %>
           Guten Morgen!
-        <% elsif current_time.hour >= 9 && current_time.hour < 12 %>
+        <% elsif current_time.hour >= 1 && current_time.hour < 4 %>
           Be aware! Your Boss is around!
-        <% elsif current_time.hour >= 12 && current_time.hour < 14 %>
+        <% elsif current_time.hour >= 4 && current_time.hour < 6 %>
           You deserve a good nap~
-        <% elsif current_time.hour >= 14 && current_time.hour < 18 %>
+        <% elsif current_time.hour >= 6 && current_time.hour < 10 %>
           GOOD ENOUGH is the best!
-        <% elsif current_time.hour >= 18 && current_time.hour < 20 %>
+        <% elsif current_time.hour >= 10 && current_time.hour < 12 %>
           饮茶先啦~
-        <% elsif current_time.hour >= 20 && current_time.hour < 23 %>
+        <% elsif current_time.hour >= 12 && current_time.hour < 15 %>
           Consider watching a movie with your love?
-        <% elsif current_time.hour >= 23 && current_time.hour < 24 %>
+        <% elsif current_time.hour >= 15 && current_time.hour < 16 %>
           Margarita for tonight, still?
         <% else %>
           Sleep early, poor 吗喽 :(

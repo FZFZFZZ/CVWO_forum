@@ -20,21 +20,11 @@ class ArticlesController < ApplicationController
     end
   
     # Apply pagination with kaminari
-    @articles = articles_query.page(params[:page]).per(30)
+    @articles = articles_query.page(params[:page]).per(20)
   end
 
   
   def show
-
-    # Refresh the movie page once after entering. 
-    # This is for tackling with an unknown bug, which causes REACT component not showing up unless refreshed.
-    # So sorry that I tried my best to solve the bug but failed. It may due to some imcompatiability issue of REACT, TS, JS and so on.
-    # unless session[:page_refreshed]
-    # session[:page_refreshed] = true
-    # else
-    # Clear the flag after the initial reload
-    # session.delete(:page_refreshed)
-    # end
 
     # Define Variables
     @article = Article.find(params[:id])
@@ -51,7 +41,7 @@ class ArticlesController < ApplicationController
     end
 
     @search = @article.title.gsub(" ", "%20")
-
+    
     #initialise info searching on TMDB#
     @movie_data, @poster_url = fetch_movie_data_and_poster(@article.title)
     unless @movie_data
